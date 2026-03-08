@@ -8,7 +8,7 @@ const credentials = JSON.parse(fs.readFileSync('credentials.json', 'utf-8'));
 (async () => {
     // TODO: Launch a browser instance and open a new page
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: false, // wanted to use this to see the visuals
     args: ['--no-sandbox', '--disable-setuid-sandbox']
 });    const page = await browser.newPage();
 
