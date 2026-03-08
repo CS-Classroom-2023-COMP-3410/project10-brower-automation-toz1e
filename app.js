@@ -9,7 +9,6 @@ const credentials = JSON.parse(fs.readFileSync('credentials.json', 'utf-8'));
     // TODO: Launch a browser instance and open a new page
   const browser = await puppeteer.launch({
     headless: false,
-    executablePath: '/usr/bin/chromium',
     args: ['--no-sandbox', '--disable-setuid-sandbox']
 });    const page = await browser.newPage();
 
@@ -23,7 +22,7 @@ const credentials = JSON.parse(fs.readFileSync('credentials.json', 'utf-8'));
     await page.click('[name="commit"]');
 
     // Wait for successful login
-    await page.waitForSelector('.avatar.circle');
+    await page.waitForSelector('img[data-component="Avatar"]');
 
     // Extract the actual GitHub username to be used later
     const actualUsername = await page.$eval('meta[name="octolytics-actor-login"]', meta => meta.content);
@@ -34,10 +33,10 @@ const credentials = JSON.parse(fs.readFileSync('credentials.json', 'utf-8'));
         await page.goto(`https://github.com/${repo}`);
 
         // TODO: Star the repository
-        const starred = await page.$('[data-ga-click*="unstar"]');
+        const starred = await page.$('.js-toggler-target[aria-label="Unstar this repository"]');
         // HINT: Use selectors to identify and click on the star button
         if (!starred) {
-          await page.click('[data-ga-click*="star"]');
+          await page.click('.js-toggler-target');
         }
         await page.waitForTimeout(1500); // This timeout helps ensure that the action is fully processed
     }
@@ -55,8 +54,8 @@ const credentials = JSON.parse(fs.readFileSync('credentials.json', 'utf-8'));
 
     // TODO: Create a list named "Node Libraries"
     // HINT: Wait for the input field and type the list name
-    await page.waitForSelector('input[aria-label="List name"]', {timeout: 5000});
-    await page.type('input[aria-label="List name"]', 'Node Libraries');
+    await page.waitForSelector('#user_list_name', {timeout: 5000});
+    await page.type('#user_list_name', 'Node Libraries');
 
     // Wait for buttons to become visible
     await page.waitForTimeout(1000);
@@ -72,6 +71,18 @@ const credentials = JSON.parse(fs.readFileSync('credentials.json', 'utf-8'));
     }
 
     // Allow some time for the list creation process
+    await page.waitForTimeout(3000);
+
+    // Click Create again since GitHub validates first then submits
+    const buttons2 = await page.$$('.Button--primary.Button--medium.Button');
+    for (const button of buttons2) {
+        const buttonText = await button.evaluate(node => node.textContent.trim());
+        if (buttonText === 'Create') {
+            await button.click();
+            break;
+        }
+    }
+
     await page.waitForTimeout(2000);
 
     for (const repo of repositories) {
@@ -79,7 +90,7 @@ const credentials = JSON.parse(fs.readFileSync('credentials.json', 'utf-8'));
 
         // TODO: Add this repository to the "Node Libraries" list
         // HINT: Open the dropdown, wait for it to load, and find the list by its name
-        const dropdownSelector = '[aria-label="Add to list"]';
+        const dropdownSelector = 'summary[aria-label="Add this repository to a list"]';
         await page.waitForSelector(dropdownSelector, {timeout: 5000});
         await page.click(dropdownSelector);
         await page.waitForTimeout(1000);

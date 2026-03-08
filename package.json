@@ -69,7 +69,7 @@
     "proxy-agent": "^6.5.0",
     "proxy-from-env": "^1.1.0",
     "pump": "^3.0.4",
-    "puppeteer": "^24.38.0",
+    "puppeteer": "^21.0.0",
     "puppeteer-core": "^24.38.0",
     "require-directory": "^2.1.1",
     "resolve-from": "^4.0.0",
@@ -101,7 +101,15 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://toz1e:REMOVED@github.com/CS-Classroom-2023-COMP-3410/project10-brower-automation-toz1e.git"
+  },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CS-Classroom-2023-COMP-3410/project10-brower-automation-toz1e/issues"
+  },
+  "homepage": "https://github.com/CS-Classroom-2023-COMP-3410/project10-brower-automation-toz1e#readme"
 }
